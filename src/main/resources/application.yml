@@ -19,5 +19,16 @@ jackson:
   serialization:
     writeDatesAsTimestamps: false
 
+endpoints:
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS
+  env:
+    enabled: true
+    sensitive: false
+
+
+
 
 
