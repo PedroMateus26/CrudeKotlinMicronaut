@@ -24,20 +24,17 @@ class CadastroBatalhaController (private val service: CadastradosParaBatalhaServ
 
     @Get("/{id}")
     fun buscaTodosSoldadosCcadastrados(@PathVariable id:Long): HttpResponse<Any> {
-        validaIdDeEntrada(id)
         return HttpResponse.ok(service.buscaSoldadoCadastradoPeloId(id))
     }
 
     @Post
     fun cadastroParaBatalha(@Valid @Body cadastro: CadastroParaBatalhaRequestDTO):HttpResponse<Any>{
         val soldadoCadastrado=service.cadastraSoldadoNoBanco(cadastro.toCadastradoEntity())
-
-        return HttpResponse.created(location())
+        return HttpResponse.created(location(soldadoCadastrado!!.id!!))
     }
 
     @Put("/{id}")
     fun cadastroParaBatalha(@Valid @Body cadastro: CadastroParaBatalhaRequestDTO, @PathVariable id:Long):HttpResponse<Any>{
-        validaIdDeEntrada(id)
         val soldadoCadastrado=service.corrigeDadosDoSoldadoCadastrado(cadastro.toCadastradoEntity(),id)
 
         return HttpResponse.ok(soldadoCadastrado)
@@ -45,14 +42,11 @@ class CadastroBatalhaController (private val service: CadastradosParaBatalhaServ
 
     @Delete("/{id}")
     fun deletaSoldadoCadastrado(id:Long):HttpResponse<Any>{
-        validaIdDeEntrada(id)
         val soldadoCadastrado=service.deletaSoldadoCadastrado(id)
 
         return HttpResponse.noContent()
     }
 
-    private fun location()=HttpResponse.uri("/soldados")
-
-    private fun validaIdDeEntrada(id:Long){ if(id==null) throw IllegalArgumentException("Id não pode ser nulo!")}
+    private fun location(id:Long)=HttpResponse.uri("/soldados/$id")
 
 }

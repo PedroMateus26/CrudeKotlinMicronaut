@@ -15,7 +15,6 @@ import javax.validation.ConstraintViolationException
 @Singleton
 class GlobalExceptionHandler:ExceptionHandler<Exception,HttpResponse<Any>> {
 
-    val LOGGER=LoggerFactory.getLogger(this::class.java)
 
     override fun handle(request: HttpRequest<*>?, exception: Exception?): HttpResponse<Any> {
         val (httpStatus, message)=when(exception){

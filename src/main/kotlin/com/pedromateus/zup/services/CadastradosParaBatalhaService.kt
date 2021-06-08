@@ -7,6 +7,7 @@ import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 import javax.persistence.EntityNotFoundException
+import javax.transaction.Transactional
 import javax.validation.Valid
 
 @Validated
@@ -16,6 +17,7 @@ class CadastradosParaBatalhaService (
     ){
 
     val LOGGER= LoggerFactory.getLogger(this::class.java)
+
 
     fun buscaSoldadoCadastradoPeloId(id:Long): CadastroParaBatalhaRequestDTO{
        val soldadoCadastrado= repository.findById(id).orElseThrow{
@@ -28,9 +30,9 @@ class CadastradosParaBatalhaService (
         return repository.findAll()
     }
 
-    fun cadastraSoldadoNoBanco(@Valid cadastrado:CadastradosParaBatalhaEntity): CadastroParaBatalhaRequestDTO {
+    fun cadastraSoldadoNoBanco(@Valid cadastrado:CadastradosParaBatalhaEntity): CadastradosParaBatalhaEntity? {
         val soldadoCadastrado=repository.save(cadastrado)
-        return CadastroParaBatalhaRequestDTO(soldadoCadastrado)
+        return soldadoCadastrado
     }
 
     fun corrigeDadosDoSoldadoCadastrado(cadastrado:CadastradosParaBatalhaEntity,id:Long):CadastroParaBatalhaRequestDTO {
