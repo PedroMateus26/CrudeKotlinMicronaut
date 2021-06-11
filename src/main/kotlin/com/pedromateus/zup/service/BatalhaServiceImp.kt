@@ -1,41 +1,40 @@
-package com.pedromateus.zup.services
+package com.pedromateus.zup.service
 
-import com.pedromateus.zup.controllers.dtos.CadastroParaBatalhaRequestDTO
-import com.pedromateus.zup.entities.CadastradosParaBatalhaEntity
-import com.pedromateus.zup.repositories.CadastroBatalhaRepository
+import com.pedromateus.zup.controller.dto.BatalhaRequest
+import com.pedromateus.zup.entity.BatalhaEntity
+import com.pedromateus.zup.repository.BatalhaRepository
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 import javax.persistence.EntityNotFoundException
-import javax.transaction.Transactional
 import javax.validation.Valid
 
 @Validated
 @Singleton
-class CadastradosParaBatalhaService (
-    private val repository:CadastroBatalhaRepository
-    ){
+class BatalhaServiceImp (
+    private val repository: BatalhaRepository
+    ):BatalhaService{
 
     val LOGGER= LoggerFactory.getLogger(this::class.java)
 
 
-    fun buscaSoldadoCadastradoPeloId(id:Long): CadastroParaBatalhaRequestDTO{
+    override fun buscaSoldadoPeloId(id:Long): BatalhaRequest {
        val soldadoCadastrado= repository.findById(id).orElseThrow{
            throw EntityNotFoundException("Entidade não encontrada com o id fornecido!")
        }
-        return CadastroParaBatalhaRequestDTO(soldadoCadastrado)
+        return BatalhaRequest(soldadoCadastrado)
     }
 
-    fun buscaTodosSoldadosCadastrados(): List<CadastradosParaBatalhaEntity> {
+    override fun buscaTodosSoldados(): List<BatalhaEntity> {
         return repository.findAll()
     }
 
-    fun cadastraSoldadoNoBanco(@Valid cadastrado:CadastradosParaBatalhaEntity): CadastradosParaBatalhaEntity? {
+    override fun cadastraSoldadoNoBanco(@Valid cadastrado: BatalhaEntity): BatalhaEntity? {
         val soldadoCadastrado=repository.save(cadastrado)
         return soldadoCadastrado
     }
 
-    fun corrigeDadosDoSoldadoCadastrado(cadastrado:CadastradosParaBatalhaEntity,id:Long):CadastroParaBatalhaRequestDTO {
+    override fun corrigeDadosDoSoldado(cadastrado: BatalhaEntity, id:Long): BatalhaRequest {
         var soldadoCadastrado=repository.findById(id).orElseThrow{
             throw EntityNotFoundException("Entidade não encontrada com o id fornecido!")
         }
@@ -46,10 +45,10 @@ class CadastradosParaBatalhaService (
 
         soldadoCadastrado=repository.update(soldadoCadastrado)
 
-        return CadastroParaBatalhaRequestDTO(soldadoCadastrado)
+        return BatalhaRequest(soldadoCadastrado)
     }
 
-    fun deletaSoldadoCadastrado(id:Long){
+    override fun deletaSoldado(id:Long){
 
         val soldadoCadastrado=repository.findById(id).orElseThrow{
             throw EntityNotFoundException("Entidade não encontrada com o id fornecido!")

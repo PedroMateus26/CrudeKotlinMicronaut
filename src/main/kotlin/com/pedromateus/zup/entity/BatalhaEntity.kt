@@ -1,11 +1,11 @@
-package com.pedromateus.zup.entities
+package com.pedromateus.zup.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class CadastradosParaBatalhaEntity(
+class BatalhaEntity(
     @Column(nullable = false)
     var classe:String?,
 

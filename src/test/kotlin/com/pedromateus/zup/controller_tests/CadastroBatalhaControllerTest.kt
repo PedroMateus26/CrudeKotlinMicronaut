@@ -1,8 +1,8 @@
 package com.pedromateus.zup.controller_tests
 
-import com.pedromateus.zup.controllers.dtos.CadastroParaBatalhaRequestDTO
-import com.pedromateus.zup.entities.CadastradosParaBatalhaEntity
-import com.pedromateus.zup.repositories.CadastroBatalhaRepository
+import com.pedromateus.zup.controller.dto.BatalhaRequest
+import com.pedromateus.zup.entity.BatalhaEntity
+import com.pedromateus.zup.repository.BatalhaRepository
 import com.sun.istack.logging.Logger
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
@@ -12,7 +12,6 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -24,7 +23,7 @@ class CadastroBatalhaControllerTest {
     private val LOGGER= Logger.getLogger(this::class.java)
 
     @field:Inject
-    lateinit var repository: CadastroBatalhaRepository
+    lateinit var repository: BatalhaRepository
 
     @field:Client("/")
     @field:Inject
@@ -38,14 +37,14 @@ class CadastroBatalhaControllerTest {
     @Test
     fun `deve cadastrar o soldado para batalha`() {
         //cenário
-        val soldadoRequest = CadastroParaBatalhaRequestDTO(
+        val soldadoRequest = BatalhaRequest(
             classe = "Shaman",
             raca = "Orc",
             profissao = "Hebalista"
         )
         //Executar ação
         val request = HttpRequest.POST("/soldados", soldadoRequest)
-        val response = client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+        val response = client.toBlocking().exchange(request, BatalhaRequest::class.java)
 
         //comparação
         with(response) {
@@ -57,7 +56,7 @@ class CadastroBatalhaControllerTest {
     @Test
     fun `não deve cadastrar quando algum campo for estiver em branco`() {
         //cenário
-        val soldadoRequest = CadastroParaBatalhaRequestDTO(
+        val soldadoRequest = BatalhaRequest(
             classe = "",
             raca = "",
             profissao = ""
@@ -65,7 +64,7 @@ class CadastroBatalhaControllerTest {
         //Executar ação
         val request = HttpRequest.POST("/soldados", soldadoRequest)
         val thrown = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+            client.toBlocking().exchange(request, BatalhaRequest::class.java)
         }
 
 
@@ -82,12 +81,12 @@ class CadastroBatalhaControllerTest {
         //cenário
         val soldadosCadastrados = repository.saveAll(
             listOf(
-                CadastradosParaBatalhaEntity(
+                BatalhaEntity(
                     classe = "Shaman",
                     raca = "Orc",
                     profissao = "Hebalista"
                 ),
-                CadastradosParaBatalhaEntity(
+                BatalhaEntity(
                     classe = "Warrior",
                     raca = "Orc",
                     profissao = "Minner"
@@ -96,8 +95,8 @@ class CadastroBatalhaControllerTest {
         )
 
         //Executar ação
-        val request = HttpRequest.GET<CadastroParaBatalhaRequestDTO>("/soldados")
-        val response = client.toBlocking().exchange(request, Argument.listOf(CadastroParaBatalhaRequestDTO::class.java))
+        val request = HttpRequest.GET<BatalhaRequest>("/soldados")
+        val response = client.toBlocking().exchange(request, Argument.listOf(BatalhaRequest::class.java))
 
         //comparação
         with(response) {
@@ -116,7 +115,7 @@ class CadastroBatalhaControllerTest {
 
         //cenário
         val soldadoCadastrado = repository.save(
-            CadastradosParaBatalhaEntity(
+            BatalhaEntity(
                 classe = "Shaman",
                 raca = "Orc",
                 profissao = "Hebalista"
@@ -126,8 +125,8 @@ class CadastroBatalhaControllerTest {
         LOGGER.info("Buscando o id: ${soldadoCadastrado.id}")
 
         //Executar ação
-        val request = HttpRequest.GET<CadastroParaBatalhaRequestDTO>("/soldados/${soldadoCadastrado.id}")
-        val response = client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+        val request = HttpRequest.GET<BatalhaRequest>("/soldados/${soldadoCadastrado.id}")
+        val response = client.toBlocking().exchange(request, BatalhaRequest::class.java)
 
         //comparação
         with(response) {
@@ -147,9 +146,9 @@ class CadastroBatalhaControllerTest {
         //cenário
         val id=1
         //Executar ação
-        val request = HttpRequest.GET<CadastroParaBatalhaRequestDTO>("/soldados/${id}")
+        val request = HttpRequest.GET<BatalhaRequest>("/soldados/${id}")
         val thrown = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+            client.toBlocking().exchange(request, BatalhaRequest::class.java)
         }
 
         //comparação
@@ -165,14 +164,14 @@ class CadastroBatalhaControllerTest {
 
         //cenário
         val soldadoCadastrado = repository.save(
-            CadastradosParaBatalhaEntity(
+            BatalhaEntity(
                 classe = "Shaman",
                 raca = "Orc",
                 profissao = "Hebalista"
             )
         )
 
-        val soldadoUpdate= CadastroParaBatalhaRequestDTO(
+        val soldadoUpdate= BatalhaRequest(
 
                 classe = "Warrior",
                 raca = "Orc",
@@ -181,7 +180,7 @@ class CadastroBatalhaControllerTest {
 
         //Executar ação
         val request = HttpRequest.PUT("/soldados/${soldadoCadastrado.id}",soldadoUpdate)
-        val response=client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+        val response=client.toBlocking().exchange(request, BatalhaRequest::class.java)
 
 
         //comparação
@@ -199,7 +198,7 @@ class CadastroBatalhaControllerTest {
 
         //cenário
         val id=1
-        val soldadoUpdate= CadastroParaBatalhaRequestDTO(
+        val soldadoUpdate= BatalhaRequest(
 
             classe = "Warrior",
             raca = "Orc",
@@ -208,7 +207,7 @@ class CadastroBatalhaControllerTest {
         //Executar ação
         val request = HttpRequest.PUT("/soldados/${id}",soldadoUpdate)
         val thrown = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+            client.toBlocking().exchange(request, BatalhaRequest::class.java)
         }
 
         //comparação
@@ -222,7 +221,7 @@ class CadastroBatalhaControllerTest {
     fun `deve deltar o soldado do banco quando o id constar no banco`(){
         //cenário
         val soldadoCadastrado = repository.save(
-            CadastradosParaBatalhaEntity(
+            BatalhaEntity(
                 classe = "Shaman",
                 raca = "Orc",
                 profissao = "Hebalista"
@@ -230,8 +229,8 @@ class CadastroBatalhaControllerTest {
         )
 
         //Executar ação
-        val request = HttpRequest.DELETE<CadastroParaBatalhaRequestDTO>("/soldados/${soldadoCadastrado.id}")
-        val response=client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+        val request = HttpRequest.DELETE<BatalhaRequest>("/soldados/${soldadoCadastrado.id}")
+        val response=client.toBlocking().exchange(request, BatalhaRequest::class.java)
 
 
         //comparação
@@ -246,9 +245,9 @@ class CadastroBatalhaControllerTest {
         //cenário
         val id=1
         //Executar ação
-        val request = HttpRequest.DELETE<CadastroParaBatalhaRequestDTO>("/soldados/${id}")
+        val request = HttpRequest.DELETE<BatalhaRequest>("/soldados/${id}")
         val thrown = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange(request, CadastroParaBatalhaRequestDTO::class.java)
+            client.toBlocking().exchange(request, BatalhaRequest::class.java)
         }
 
         //comparação

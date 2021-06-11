@@ -1,7 +1,7 @@
 micronaut:
   application:
     name: crudeBasicoMirconautKotlin
-
+    port: 8080
 
 datasources:
   default:
@@ -22,11 +22,7 @@ jackson:
 endpoints:
   health:
     enabled: true
-    sensitive: false
-    details-visible: ANONYMOUS
-  env:
-    enabled: true
-    sensitive: false
+
 
 
 

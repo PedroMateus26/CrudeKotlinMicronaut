@@ -1,12 +1,12 @@
-package com.pedromateus.zup.controllers.dtos
+package com.pedromateus.zup.controller.dto
 
-import com.pedromateus.zup.entities.CadastradosParaBatalhaEntity
+import com.pedromateus.zup.entity.BatalhaEntity
 import io.micronaut.core.annotation.Introspected
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 @Introspected
-data class CadastroParaBatalhaRequestDTO(
+data class BatalhaRequest(
     @field:NotBlank(message = "Nome da classe é obrigatório")
     @field:NotNull(message = "Nome da classe é obrigatório")
     val classe: String,
@@ -20,14 +20,14 @@ data class CadastroParaBatalhaRequestDTO(
     val profissao: String,
 ) {
 
-    constructor(soldadoCadastrado: CadastradosParaBatalhaEntity) : this(
+    constructor(soldadoCadastrado: BatalhaEntity) : this(
         soldadoCadastrado.classe!!,
         soldadoCadastrado.raca!!,
         soldadoCadastrado.profissao!!
     )
 
 
-    fun toCadastradoEntity() = CadastradosParaBatalhaEntity(
+    fun toCadastradoEntity() = BatalhaEntity(
         classe = classe,
         raca = raca,
         profissao = profissao
